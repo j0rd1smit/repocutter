@@ -27,30 +27,34 @@ def main():
     current_node = Node.from_path(dirs)
     current_path = []
 
-    while True:
-        completer = get_completer(dirs, current_node, current_path)
-        display_options(current_node.options)
+    try:
+        while True:
+            completer = get_completer(dirs, current_node, current_path)
+            display_options(current_node.options)
 
-        inputs = prompt(
-            "/".join(current_path) + "/ > ",
-            history=FileHistory(str(history_path)),
-            auto_suggest=AutoSuggestFromHistory(),
-            completer=completer,
-        ).strip()
-        clear_display_options(current_node.options)
+            inputs = prompt(
+                "/".join(current_path) + "/ > ",
+                history=FileHistory(str(history_path)),
+                auto_suggest=AutoSuggestFromHistory(),
+                completer=completer,
+            ).strip()
+            clear_display_options(current_node.options)
 
-        for item in inputs.split("/"):
-            if item in current_node.options:
-                current_path.append(inputs)
-                current_node = current_node[inputs]
+            for item in inputs.split("/"):
+                if item in current_node.options:
+                    current_path.append(inputs)
+                    current_node = current_node[inputs]
 
-        if current_node.is_leaf:
-            break
+            if current_node.is_leaf:
+                break
 
-    selected = "/".join(current_path)
-    os.system(
-        f"cookiecutter https://github.com/{repo_owner}/{repo_name} --directory='{selected}'"
-    )
+        selected = "/".join(current_path)
+        os.system(
+            f"cookiecutter https://github.com/{repo_owner}/{repo_name} --directory='{selected}'"
+        )
+    except KeyboardInterrupt:
+        print("Cancelled by the user.")
+        sys.exit(0)
 
 
 def get_completer(dirs, current_node, current_path):
