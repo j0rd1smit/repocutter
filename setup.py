@@ -16,7 +16,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "repocutter=repocutter",
+            "repocutter=repocutter:main",
         ],
     },
 )

@@ -1,17 +1,17 @@
-#!/usr/bin/env python3
+import os
 import sys
+from pathlib import Path
 from typing import Dict, List
 
 import requests
-from pathlib import Path
-import os
 from prompt_toolkit import prompt
-from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.history import FileHistory
 
-CURSOR_UP_ONE = '\x1b[1A'
-ERASE_LINE = '\x1b[2K'
+CURSOR_UP_ONE = "\x1b[1A"
+ERASE_LINE = "\x1b[2K"
+
 
 def main():
     repo_owner = "j0rd1smit"
@@ -19,7 +19,9 @@ def main():
     history_path = Path.home() / f".local/share/{repo_name}/history"
     history_path.parent.mkdir(exist_ok=True, parents=True)
 
-    res = requests.get(f"https://raw.githubusercontent.com/{repo_owner}/{repo_name}/main/info.json")
+    res = requests.get(
+        f"https://raw.githubusercontent.com/{repo_owner}/{repo_name}/main/info.json"
+    )
     res.raise_for_status()
     dirs = sorted(res.json()["dirs"])
     current_node = Node.from_path(dirs)
@@ -30,7 +32,7 @@ def main():
         display_options(current_node.options)
 
         inputs = prompt(
-            "/".join(current_path) + '/ > ',
+            "/".join(current_path) + "/ > ",
             history=FileHistory(str(history_path)),
             auto_suggest=AutoSuggestFromHistory(),
             completer=completer,
@@ -46,8 +48,9 @@ def main():
             break
 
     selected = "/".join(current_path)
-    os.system(f"cookiecutter https://github.com/{repo_owner}/{repo_name} --directory='{selected}'")
-
+    os.system(
+        f"cookiecutter https://github.com/{repo_owner}/{repo_name} --directory='{selected}'"
+    )
 
 
 def get_completer(dirs, current_node, current_path):
@@ -75,6 +78,7 @@ def clear_display_options(options):
         sys.stdout.write(CURSOR_UP_ONE)
         sys.stdout.write(ERASE_LINE)
     sys.stdout.flush()
+
 
 class Node:
     def __init__(self):
@@ -107,7 +111,7 @@ class Node:
 
         return self.children[key]
 
-    def display(self, depth: int=0) -> None:
+    def display(self, depth: int = 0) -> None:
         if len(self.children) == 0:
             return
 
@@ -115,5 +119,6 @@ class Node:
             print(" " * depth, "-", k)
             v.display(depth=depth + 2)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
