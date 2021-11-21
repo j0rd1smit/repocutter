@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="repocutter",
-    version="0.0.0",
+    version="0.0.1",
     description="Repocutter",
     author="Jordi Smit",
     author_email="jordismit2000@gmail.com",

@@ -14,9 +14,19 @@ ERASE_LINE = "\x1b[2K"
 
 
 def main():
-    repo_owner = "j0rd1smit"
-    repo_name = "cookiecutter_file_templates"
-    history_path = Path.home() / f".local/share/{repo_name}/history"
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument("--repo_owner", type=str, required=True)
+    parser.add_argument("--repo_name", type=str, required=True)
+
+    args = parser.parse_args()
+
+    repo_owner = args.repo_owner
+    repo_name = args.repo_name
+    history_path = (
+        Path.home() / f".local/share/repocutter/{repo_owner}-{repo_name}-history"
+    )
     history_path.parent.mkdir(exist_ok=True, parents=True)
 
     res = requests.get(
